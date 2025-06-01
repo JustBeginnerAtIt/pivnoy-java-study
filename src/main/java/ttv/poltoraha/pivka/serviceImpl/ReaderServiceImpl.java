@@ -9,6 +9,7 @@ import ttv.poltoraha.pivka.entity.Quote;
 import ttv.poltoraha.pivka.entity.Reader;
 import ttv.poltoraha.pivka.entity.Reading;
 import ttv.poltoraha.pivka.repository.BookRepository;
+import ttv.poltoraha.pivka.repository.QuoteRepository;
 import ttv.poltoraha.pivka.repository.ReaderRepository;
 import ttv.poltoraha.pivka.service.ReaderService;
 import util.MyUtility;
@@ -17,6 +18,7 @@ import util.MyUtility;
 @RequiredArgsConstructor
 @Transactional
 public class ReaderServiceImpl implements ReaderService {
+    private final QuoteRepository quoteRepository;
     private final ReaderRepository readerRepository;
     private final BookRepository bookRepository;
     @Override
@@ -30,10 +32,10 @@ public class ReaderServiceImpl implements ReaderService {
         newQuote.setText(text);
         newQuote.setReader(reader);
 
-        reader.getQuotes().add(newQuote);
-
-        // todo потенциально лучше сейвить quoteRepository. Чем меньше вложенностей у сохраняемой сущности - тем эффективнее это будет происходить.
-        readerRepository.save(reader);
+        //save() через QuoteRepository эффективнее из-за того, что мы сохраняем самостоятельную сущность Quote отдельно.
+        //При сохранении newQuote через reader. могут быть обновлены другие элементы у reader.
+        //Работа напрямую с Quote
+        quoteRepository.save(newQuote);
     }
 
     @Override
