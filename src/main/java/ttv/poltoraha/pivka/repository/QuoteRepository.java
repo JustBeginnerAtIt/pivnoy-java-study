@@ -5,6 +5,7 @@ import org.springframework.stereotype.Repository;
 import ttv.poltoraha.pivka.entity.Quote;
 import ttv.poltoraha.pivka.entity.Reader;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
