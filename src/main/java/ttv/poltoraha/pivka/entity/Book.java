@@ -16,7 +16,9 @@ public class Book {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String article;
-    private String genre;
+    @ManyToOne
+    @JoinColumn(name = "genre_id")
+    private Genre genre;
     private Double rating;
     private String tags;
     @ManyToOne

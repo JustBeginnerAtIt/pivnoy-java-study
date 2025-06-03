@@ -19,7 +19,9 @@
                 <constraints nullable="false" primaryKey="true"/>
             </column>
             <column name="article" type="varchar(128)"/>
-            <column name="genre" type="varchar(128)"/>
+            <column name="genre_id" type="int">
+                <constraints nullable="false" foreignKeyName="fk_book_genre" references="genres(id)"/>
+            </column>
 <!-- сделать ограничение до 10 -->
             <column name="rating" type="double" defaultValue="0.0"/>
             <column name="tags" type="varchar(128)"/>
