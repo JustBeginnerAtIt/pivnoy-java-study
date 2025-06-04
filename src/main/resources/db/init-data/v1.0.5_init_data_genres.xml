@@ -1,0 +1,26 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd">
+    <!--JUNIOR-разработчик. Чел, которому нужен другой чел и опора, чтобы он решал задачки.-->
+    <!--MIDDLE-разработчик. Чел, которому не нужен другой чел. Он может самостоятельно решить задачки.-->
+    <!--SENIOR-разработчик. Чел, которому не нужен другой чел. Чел, который может самостоятельно решить задачки. Чел, который решает задачки самым эффективным способом.-->
+    <changeSet id="add-data-book" author="poltoraha_pivka">
+        <insert tableName="genres">
+            <column name="id" value="1"/>
+            <column name="genre_name" value="Роман"/>
+            <column name="description" value="Залупа"/>
+        </insert>
+        <insert tableName="genres">
+            <column name="id" value="2"/>
+            <column name="genre_name" value="Пьеса"/>
+            <column name="description" value="Пизда"/>
+        </insert>
+        <insert tableName="genres">
+            <column name="id" value="3"/>
+            <column name="genre_name" value="Летопись"/>
+            <column name="description" value="Хуй"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>
