@@ -17,7 +17,7 @@ public class Genre {
     private Integer id;
     private String genreName;
     private String description;
-    @OneToMany(mappedBy = "genre")
+    @OneToMany(mappedBy = "genre", cascade = CascadeType.ALL)
     @ToString.Exclude
     private List<Book> books;
 }
