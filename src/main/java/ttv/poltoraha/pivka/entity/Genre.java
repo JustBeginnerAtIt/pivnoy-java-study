@@ -7,6 +7,7 @@ import java.util.List;
 
 @Entity(name = "genre")
 @Data
+@Table(name = "genres")
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor

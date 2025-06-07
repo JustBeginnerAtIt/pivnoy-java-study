@@ -37,6 +37,18 @@ web:
   connection-timeout: 2s
   read-timeout: 2s
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  metrics:
+    enable:
+      all: true
+    distribution:
+      percentiles-histogram:
+        http.server.requests: true
+
 book-facts:
   facts:
     - id: "Эротика"
