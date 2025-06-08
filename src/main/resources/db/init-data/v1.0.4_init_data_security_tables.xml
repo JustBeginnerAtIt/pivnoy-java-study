@@ -38,4 +38,15 @@
         </insert>
     </changeSet>
 
+    <changeSet id="add-needs-password-reset" author="poltoraha_pivka">
+        <addColumn tableName="app_user">
+            <column name="needs_password_reset" type="boolean" defaultValueBoolean="false"/>
+        </addColumn>
+
+        <update tableName="app_user">
+            <column name="needs_password_reset" valueBoolean="true"/>
+            <where>username = 'poltoraha_pivka'</where>
+        </update>
+    </changeSet>
+
 </databaseChangeLog>

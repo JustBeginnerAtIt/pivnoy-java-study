@@ -58,6 +58,7 @@ public class ReaderServiceImpl implements ReaderService {
         val reader = new Reader();
         reader.setUsername(username);
         reader.setPassword(password);
+        reader.setNeedsPasswordReset(true);
 
         readerRepository.save(reader);
     }

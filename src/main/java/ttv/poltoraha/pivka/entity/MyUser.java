@@ -15,6 +15,9 @@ public class MyUser {
     private String username;
     private String password;
 
+    @Column(name = "needs_password_reset", nullable = false)
+    private boolean needsPasswordReset = false;
+
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(
             name = "user_roles",
