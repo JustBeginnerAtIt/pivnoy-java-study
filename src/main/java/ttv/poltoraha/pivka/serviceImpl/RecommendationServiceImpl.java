@@ -3,6 +3,8 @@ package ttv.poltoraha.pivka.serviceImpl;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ttv.poltoraha.pivka.entity.*;
@@ -85,7 +87,51 @@ public class RecommendationServiceImpl implements RecommendationService {
      */
     @Override
     public List<Book> recommendBook(String username) {
-        return null;
+        val reader = MyUtility.findEntityById(readerRepository.findByUsername(username), "reader", username);
+
+        // прочитанные книги
+        val readBooks = reader.getReadings()
+                .stream()
+                .map(Reading::getBook)
+                .toList();
+
+        if (readBooks.isEmpty()) {
+            throw new IllegalStateException("No read books found");
+        }
+
+        // отбираем популярные теги
+        val mostPopularTags = readBooks
+                .stream()
+                .flatMap(book -> book.getTags().stream())
+                .collect(Collectors.groupingBy(tag -> tag, Collectors.counting()))
+                .entrySet().stream()
+                .sorted(Map.Entry.<String, Long>comparingByValue().reversed())
+                .limit(2)
+                .map(Map.Entry::getKey)
+                .toList();
+
+        if (mostPopularTags.size() < 2) {
+            throw new IllegalStateException("Too few readings found");
+        }
+
+
+        val idsOfReadBooks = readBooks.stream()
+                .map(Book::getId)
+                .collect(Collectors.toSet());
+
+        val topBooksByFirstTag = bookRepository.findBookByTag(
+                mostPopularTags.get(0),
+                idsOfReadBooks,
+                PageRequest.of(0, 3));
+
+        val topBooksBySecondTag = bookRepository.findBookByTag(
+                mostPopularTags.get(1),
+                idsOfReadBooks,
+                PageRequest.of(1, 2));
+
+        return Stream.concat(topBooksByFirstTag.stream(), topBooksBySecondTag.stream())
+                .distinct()
+                .toList();
     }
 
     /**

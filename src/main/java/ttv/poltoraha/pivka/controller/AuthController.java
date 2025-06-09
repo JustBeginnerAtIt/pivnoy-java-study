@@ -23,7 +23,7 @@ import ttv.poltoraha.pivka.serviceImpl.ReaderServiceChooser;
 @RequiredArgsConstructor
 public class AuthController {
     private final AuthenticationManager authenticationManager;
-    private final ReaderServiceChooser choiser;
+    private final ReaderServiceChooser chooser;
     private final PasswordEncoder passwordEncoder;
     private final MyUserRepository  myUserRepository;
 
@@ -37,7 +37,7 @@ public class AuthController {
 
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 
-        ReaderService service = choiser.getReaderService(userDetails.getUsername());
+        ReaderService service = chooser.getReaderService(userDetails.getUsername());
 
         if (userDetails.needsPasswordReset()) {
 

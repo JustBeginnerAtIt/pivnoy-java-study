@@ -1,11 +1,13 @@
 package ttv.poltoraha.pivka.repository;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import ttv.poltoraha.pivka.entity.Book;
 
+import java.util.Collection;
 import java.util.List;
 
 @Repository
@@ -18,7 +20,7 @@ public interface BookRepository extends CrudRepository<Book, Integer> {
            SELECT MAX(a.avgRating) FROM author a WHERE a.fullName = :fullName
            )
     """)
-    List<Book> findBooksByAuthorFullNameAndRating(@Param("fullName") String fullName);
+    List<Book> findBooksByAuthorFullNameAndAuthorRating(@Param("fullName") String fullName);
 
     // Второй вариант через SQL
 //    @Query(value = """
@@ -31,4 +33,15 @@ public interface BookRepository extends CrudRepository<Book, Integer> {
 //           )
 //    """, nativeQuery = true)
 //    List<Book> findBooksByAuthorFullNameAndRating(@Param("fullName") String fullName);
+
+    @Query(value = """
+        SELECT b from book b
+        WHERE b.tags LIKE CONCAT('%', :tag, '%')
+        AND b.id NOT IN :excludingReadBooksIds
+        ORDER BY b.rating DESC
+    """)
+    List<Book> findBookByTag(
+            @Param("tag") String tag,
+            @Param("excludingReadBooksIds") Collection<Integer> excludingReadBooksIds,
+            Pageable pageable);
 }
