@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ttv.poltoraha.pivka.entity.*;
 import ttv.poltoraha.pivka.repository.BookRepository;
+import ttv.poltoraha.pivka.repository.QuoteRatingRepository;
 import ttv.poltoraha.pivka.repository.ReaderRepository;
 import ttv.poltoraha.pivka.repository.ReadingRepository;
 import ttv.poltoraha.pivka.service.AuthorService;
@@ -30,6 +31,7 @@ public class RecommendationServiceImpl implements RecommendationService {
     private final AuthorService authorService;
     private final BookRepository bookRepository;
     private final ReadingRepository readingRepository;
+    private final QuoteRatingRepository quoteRatingRepository;
 
     /**
      * Чё делает метод и чё он должен делать:
@@ -150,15 +152,28 @@ public class RecommendationServiceImpl implements RecommendationService {
 
         val readings = readingRepository.findAllByBook_id(book_id);
 
-        val topReader = readings.stream()
+        val allQuotes = readings.stream()
                 .map(Reading::getReader)
-                .sorted(Comparator.comparingInt(reader -> reader.getReadings().size()))
-                .limit(5)
+                .flatMap(reader -> reader.getQuotes().stream())
+                .filter(quote -> quote.getBook().getId().equals(book_id))
+                .distinct()
                 .toList();
 
-        return topReader.stream()
-                .flatMap(reader -> reader.getQuotes().stream())
-                .filter(quote -> Objects.equals(quote.getBook().getId(), book_id))
+        return allQuotes.stream()
+                .sorted((q1, q2) -> Double.compare(
+                        getAverageRatingForQuote(q2),
+                        getAverageRatingForQuote(q1)
+                ))
+                .limit(5)
                 .toList();
     }
+
+    private double getAverageRatingForQuote(Quote quote) {
+        val ratings = quoteRatingRepository.findAllByQuote(quote);
+        return ratings.stream()
+                .mapToInt(QuoteRating::getRating)
+                .average()
+                .orElse(0.0);
+    }
+
 }

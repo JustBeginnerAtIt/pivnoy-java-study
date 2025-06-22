@@ -1,0 +1,32 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd">
+    <!--JUNIOR-разработчик. Чел, которому нужен другой чел и опора, чтобы он решал задачки.-->
+    <!--MIDDLE-разработчик. Чел, которому не нужен другой чел. Он может самостоятельно решить задачки.-->
+    <!--SENIOR-разработчик. Чел, которому не нужен другой чел. Чел, который может самостоятельно решить задачки. Чел, который решает задачки самым эффективным способом.-->
+    <changeSet id="create-table-review-rating" author="poltoraha_pivka">
+        <createTable tableName="review_rating">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints nullable = "false" primaryKey="true"/>
+            </column>
+            <column name="username" type="varchar(255)">
+                <constraints nullable="false" foreignKeyName="fk_review_rating_user"
+                             referencedTableName="app_user" referencedColumnNames="username"/>
+            </column>
+            <column name="review_id" type="int">
+                <constraints nullable="false" foreignKeyName="fk_review_rating_review"
+                             referencedTableName="review" referencedColumnNames="id"/>
+            </column>
+            <column name="rating" type="int">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addUniqueConstraint
+                tableName="review_rating"
+                columnNames="username, review_id"
+                constraintName="uk_review_rating_user_review"/>
+    </changeSet>
+
+</databaseChangeLog>
